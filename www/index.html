@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Settings Manager</title>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+    .input-group-addon.settinglabel { width: 150px; } 
+    .input-group { width: 100%; }
+    .settings .col-md-6 { margin-bottom: 10px;}
+    .settings {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="bower_components/html5shiv/dist/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+<nav class="navbar navbar-default" role="navigation">
+<div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Open Radio Settings Manager</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <!-- ko foreach: servers -->
+            <li class="active" data-bind="css : { active : active() == true }">
+                <a href="#" data-bind="text : name, click : onSelect"></a>
+            </li>
+          <!-- /ko -->
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active" style="margin-top: 8px;margin-right: 8px;" data-bind="visible : changes() !== 0" ><button type="button" class="btn btn-warning">Save</button></li>
+          <li class="active" style="margin-top: 8px;" ><button type="button" class="btn btn-primary">Support</button></li>
+         </ul>
+    </div>
+</div>
+</nav>
+<!-- ko foreach: servers -->
+<div class="panel panel-default" data-bind="visible: ( active() == true && $parent.user.loggedIn() == true  )">
+  <div class="panel-heading"><!-- ko text: name --><!-- /ko --> Settings</div>
+  <div class="panel-body">
+    <p data-bind="text : description"></p>
+  </div>
+    <div class="row settings" data-bind="foreach : settings" >
+      <div class="col-md-6">
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon settinglabel" data-bind="text : name">@</span>
+          <input type="text" data-bind="value : value" class="form-control" placeholder="Username">
+        </div>
+      </div>
+    </div>
+</div>
+<!-- /ko -->
+<div class="panel panel-default" data-bind="visible: (  user.loggedIn() == false  )">
+  <div class="panel-heading">Login Menu</div>
+  <div class="panel-body">
+    <p data-bind="text : description"></p>
+  </div>
+    <div class="row settings"  >
+      <div class="col-md-6">
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon settinglabel" >Username</span>
+          <input type="text" class="form-control" placeholder="Username" >
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon settinglabel" >Password</span>
+          <input type="password" class="form-control" placeholder="Password" >
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="input-group input-group-lg">
+        <button type="button" class="btn btn-primary btn-lg" style="float: right;width: 100%;" onclick="settingsManager.user.loggedIn(true);" >Login</button>
+        </div>
+      </div>
+    </div>
+</div>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/knockout/dist/knockout.js"></script>
+    <script src="js/settingsManager.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+       var socket = io.connect();
+       socket.on("settings" , function( data ){ 
+         settingsManager.syncServerData( data );
+       });
+    </script>
+  </body>
+</html>
