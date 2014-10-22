@@ -1,25 +1,21 @@
+String.prototype.replaceAll = function(str1, str2, ignore) 
+{
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+} 
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var ioClient = require('socket.io-client');
 app.use(express.static(__dirname + '/www' ) );
-var settings = 
-{
-    name : 'Mic Processing' , 
-    description : 'Mic Processing Settings',
-    settings: [
-        { name : 'Ip Address' , value : '192.168.1.100' , type : 'string' },
-        { name : 'Subnet Mask' , value : '255.255.255.0'  , type : 'string' },
-        { name : 'Gateway' , value : '192.168.1.1'  , type : 'string' },
-    ]
-};
+var settings = require('./settings.js');
+settings.readFiles();
 io.on('connection' , function(socket){
     socket.on( 'save' , function( data ){ 
         console.log( data );
     });
-    socket.emit('settings' , settings );
+    socket.emit('settings' , settings.data );
 });
 
-
+setTimeout( function(){ settings.saveFile( 'interfaces' , 'file' ); } , 1000 );
 server.listen(8080);
