@@ -1,0 +1,11 @@
+[
+    { 
+        "type" : "file" , 
+        "name" : "networking",
+        "template" : "interfaces" , 
+        "file" : "/etc/network/interfaces" , 
+        "watch" : ["ip_address" , "subnet_mask" , "gateway"] , 
+        "preexec" : [],
+        "postexec" : [ { "type" :"bash" , "command" : "/etc/init.d/networking restart" }]
+     }
+]

@@ -1,7 +1,3 @@
-String.prototype.replaceAll = function(str1, str2, ignore) 
-{
-    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-} 
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -11,8 +7,9 @@ app.use(express.static(__dirname + '/www' ) );
 var settings = require('./settings.js');
 settings.readFiles();
 io.on('connection' , function(socket){
-    socket.on( 'save' , function( data ){ 
-        console.log( data );
+    socket.on( 'save' , function( data ){
+        settings.save( data );
+        
     });
     socket.emit('settings' , settings.data );
 });

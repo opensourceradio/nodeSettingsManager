@@ -12,6 +12,21 @@ var Setting = function(data){
             self.value( String( newData.value ) );
         }
     }
+    self.original.subscribe(
+        function(){
+            console.log(self.value() );
+            if( self.value() != self.original() ){
+                if( self.changed() == false ){
+                    settingsManager.changes(settingsManager.changes() + 1 );
+                }
+                self.changed(true);
+            } else {
+                if( self.changed() == true ){
+                    settingsManager.changes(settingsManager.changes() - 1 );
+                }
+                self.changed(false);
+            }
+        }  );
     self.value.subscribe(
         function(){
             console.log(self.value() );
@@ -76,6 +91,18 @@ var Server = function(data){
 
 var settingsManager = {
     servers : ko.observableArray([]),
+    saveChanges : function(){
+        var changes = [];
+        ko.utils.arrayForEach(settingsManager.servers(), function (server) {
+           ko.utils.arrayForEach(server.settings(), function (setting) {
+               if( setting.changed() === true ){
+                   changes.push({ server : server.name() , name : setting.name() , value : setting.value() } );
+                   setting.original( setting.value() );
+               } 
+           } );
+        });
+        socket.emit('save' , changes );
+    },
     syncServerData : function( data ){
         var match = ko.utils.arrayFirst(settingsManager.servers(), function(server) {
             return server.name() === data.name;
