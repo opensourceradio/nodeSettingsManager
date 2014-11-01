@@ -124,9 +124,6 @@ var settingsManager = {
             //Salt based on username
             self.baseHash( CryptoJS.SHA256(  self.username() + '' +  self.password()  ).toString() );
             self.password(''); // Clear the password it is no loner needed
-            console.log( self.password() );
-            console.log( self.username() );
-            console.log( self.baseHash() );
             socket.emit('checkAuth' , self.username() );
         },
         sendLogin : function(challange){
@@ -144,11 +141,9 @@ var settingsManager = {
     changes : ko.observable(0)
 }
 socket.on('challangeAuth' , function( challange ){
-    console.log( challange );
     settingsManager.user.sendLogin(challange);
 });
 socket.on('loginSuccessful' , function(userInfo){
-    console.log( userInfo );
     settingsManager.user.displayName(userInfo.displayName);
     settingsManager.user.loggedIn(true);
 });
