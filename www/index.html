@@ -25,27 +25,32 @@
     <![endif]-->
   </head>
   <body>
-<nav class="navbar navbar-default" role="navigation">
-<div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-        <a class="navbar-brand" href="#">Open Radio Settings Manager</a>
-    </div>
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <!-- ko foreach: servers -->
+      <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Open Radio Settings Manager</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+             <!-- ko foreach: servers -->
             <li class="active" data-bind="css : { active : active() == true }">
                 <a href="#" data-bind="text : name, click : onSelect"></a>
             </li>
           <!-- /ko -->
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li class="active" style="margin-top: 8px;margin-right: 8px;" data-bind="visible : changes() !== 0, click : saveChanges" ><button type="button" class="btn btn-warning">Save</button></li>
-          <li class="active" style="margin-top: 8px;" ><button type="button" class="btn btn-primary">Support</button></li>
-         </ul>
-    </div>
-</div>
-</nav>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+              <li class="active" style="margin-top: 8px;margin-right: 8px;" data-bind="visible : changes() !== 0, click : saveChanges" ><button type="button" class="btn btn-warning">Save</button></li>
+            <li class="active" style="margin-top: 8px;" ><button type="button" class="btn btn-primary">Support</button></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 <!-- ko foreach: servers -->
 <div class="panel panel-default" data-bind="visible: ( active() == true && $parent.user.loggedIn() == true  )">
   <div class="panel-heading"><!-- ko text: name --><!-- /ko --> Settings</div>
@@ -71,18 +76,18 @@
       <div class="col-md-6">
         <div class="input-group input-group-lg">
           <span class="input-group-addon settinglabel" >Username</span>
-          <input type="text" class="form-control" placeholder="Username" >
+          <input data-bind="value : user.username" type="text" class="form-control" placeholder="Username" >
         </div>
       </div>
       <div class="col-md-6">
         <div class="input-group input-group-lg">
-          <span class="input-group-addon settinglabel" >Password</span>
-          <input type="password" class="form-control" placeholder="Password" >
+          <span class="input-group-addon settinglabel" data-bind="text : username" >Password</span>
+          <input data-bind="value : user.password" type="password" class="form-control" placeholder="Password" >
         </div>
       </div>
       <div class="col-md-12">
         <div class="input-group input-group-lg">
-        <button type="button" class="btn btn-primary btn-lg" style="float: right;width: 100%;" onclick="settingsManager.user.loggedIn(true);" >Login</button>
+        <button type="button" class="btn btn-primary btn-lg" style="float: right;width: 100%;" onclick="settingsManager.user.login()" >Login</button>
         </div>
       </div>
     </div>
@@ -90,13 +95,16 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/knockout/dist/knockout.js"></script>
-    <script src="js/settingsManager.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="bower_components/cryptojslib/rollups/sha256.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+    
     <script>
        var socket = io.connect();
        socket.on("settings" , function( data ){ 
          settingsManager.syncServerData( data );
        });
     </script>
+    <script src="js/settingsManager.js"></script>
+
   </body>
 </html>

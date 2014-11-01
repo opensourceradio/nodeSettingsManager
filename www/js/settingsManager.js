@@ -51,7 +51,10 @@ var Server = function(data){
     var self = this;
     self.name = ko.observable(data.name);
     self.active = ko.observable( data.active == true ? true : false );
-    self.description = ko.observable( typeof data.description == "string" ? data.description : '' );
+    self.description = ko.observable('');
+    if( data.hasOwnProperty( 'description' ) ){
+        self.description( data.description  );
+    }
     self.onSelect = function(){
         ko.utils.arrayForEach(settingsManager.servers(), function (server) {
             //For efficency, I dont wan't subscribers to active to get hit if there will be no change
@@ -114,9 +117,39 @@ var settingsManager = {
         }
     },
     user : {
-        loggedIn : ko.observable(true),
-        displayName : ko.observable('')
+        loggedIn : ko.observable(false),
+        login : function(){
+            var self = settingsManager.user;
+            //Get the hash of the username and the password ( The server stores this hash as well )
+            //Salt based on username
+            self.baseHash( CryptoJS.SHA256(  self.username() + '' +  self.password()  ).toString() );
+            self.password(''); // Clear the password it is no loner needed
+            console.log( self.password() );
+            console.log( self.username() );
+            console.log( self.baseHash() );
+            socket.emit('checkAuth' , self.username() );
+        },
+        sendLogin : function(challange){
+            var self = settingsManager.user;
+            //Hash this with the challenge to create a token that is unique to prevent playback attacks
+            var authHash = CryptoJS.SHA256(  self.baseHash() + '' + challange ).toString();
+            socket.emit( 'verifyAuth' , { hash : authHash , username : self.username() } );
+        },
+        
+        'username' : ko.observable(''),
+        'password' : ko.observable(''),
+        'baseHash' : ko.observable(''),
+        'displayName' : ko.observable('')
     },
     changes : ko.observable(0)
 }
+socket.on('challangeAuth' , function( challange ){
+    console.log( challange );
+    settingsManager.user.sendLogin(challange);
+});
+socket.on('loginSuccessful' , function(userInfo){
+    console.log( userInfo );
+    settingsManager.user.displayName(userInfo.displayName);
+    settingsManager.user.loggedIn(true);
+});
 ko.applyBindings( settingsManager );
