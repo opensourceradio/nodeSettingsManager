@@ -26,6 +26,27 @@ module.exports = {
     onConnect : function( socket ){
         var self = this;
         socket.loggedIn = false;
+        socket.on( 'changePassword' , function( data ){
+            if( socket.loggedIn === true && socket.username !== '' ){
+                if( data.hasOwnProperty( 'newHash' ) ){
+                    var user = self.Users.get(socket.username);
+                    if( user !== undefined ){
+                        user.hash = data.newHash;
+                        self.Users.set( socket.username , user );
+                    }
+                }
+            }
+        });
+        socket.on('addUser' , function(user){
+            if( user.hasOwnProperty(user.username) && user.hasOwnProperty(user.hash)){
+                var u = self.Users.get(user.username);
+                if( u === undefined){
+                    user.challange = '';
+                    self.Users.set(user.username , user );
+                    self.updateChallange(user.username);
+                }
+            }
+        });
         socket.on( 'verifyAuth' , function(userInfo){
             var username = userInfo.username;
             var authValid = false;
