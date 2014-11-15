@@ -1,5 +1,6 @@
 {
-    "name": "Mic Processing",
+    "name": "mp1",
+    "display_name" : "Mic Processing",
     "description": "Mic Processing Settings",
     "settings": {
         "ip_address" : {

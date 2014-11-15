@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Settings Manager</title>
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+       <link rel="stylesheet" href="css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="css/bootswatch.min.css">
     
     <style>
     .input-group-addon.settinglabel { width: 150px; } 
@@ -28,7 +29,14 @@
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <button 
+              type="button" 
+              class="navbar-toggle collapsed" 
+              data-toggle="collapse" 
+              data-target="#navbar" 
+              aria-expanded="false" 
+              aria-controls="navbar"
+            >
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -51,52 +59,52 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-<!-- ko foreach: servers -->
-<div class="panel panel-default" data-bind="visible: ( active() == true && $parent.user.loggedIn() == true  )">
-  <div class="panel-heading"><!-- ko text: name --><!-- /ko --> Settings</div>
-  <div class="panel-body">
-    <p data-bind="text : description"></p>
-  </div>
-    <div class="row settings" data-bind="foreach : settings" >
-      <div class="col-md-6">
-        <div class="input-group input-group-lg">
-          <span class="input-group-addon settinglabel" data-bind="text : name">@</span>
-          <input type="text" data-bind="value : value" class="form-control" placeholder="Username">
-        </div>
+    <!-- ko foreach: servers -->
+    <div class="panel panel-default" data-bind="visible: ( active() == true && $parent.user.loggedIn() == true  )">
+      <div class="panel-heading"><!-- ko text: name --><!-- /ko --> Settings</div>
+      <div class="panel-body">
+        <p data-bind="text : description"></p>
       </div>
+        <div class="row settings" data-bind="foreach : settings" >
+          <div class="col-md-6">
+            <div class="input-group input-group-lg">
+              <span class="input-group-addon settinglabel" data-bind="text : name">@</span>
+              <input type="text" data-bind="value : value" class="form-control" placeholder="Username">
+            </div>
+          </div>
+        </div>
     </div>
-</div>
-<!-- /ko -->
-<div class="panel panel-default" data-bind="visible: (  user.loggedIn() == false  )">
-  <div class="panel-heading">Login Menu</div>
-  <div class="panel-body">
-    <p></p>
-  </div>
-    <div class="row settings"  >
-      <div class="col-md-6">
-        <div class="input-group input-group-lg">
-          <span class="input-group-addon settinglabel" >Username</span>
-          <input data-bind="value : user.username" type="text" class="form-control" placeholder="Username" >
-        </div>
+    <!-- /ko -->
+    <div class="panel panel-default" data-bind="visible: (  user.loggedIn() == false  )">
+      <div class="panel-heading">Login Menu</div>
+      <div class="panel-body">
+        <p></p>
       </div>
-      <div class="col-md-6">
-        <div class="input-group input-group-lg">
-          <span class="input-group-addon settinglabel" >Password</span>
-          <input data-bind="value : user.password" type="password" class="form-control" placeholder="Password" >
+        <div class="row settings"  >
+          <div class="col-md-6">
+            <div class="input-group input-group-lg">
+              <span class="input-group-addon settinglabel" >Username</span>
+              <input data-bind="value : user.username" type="text" class="form-control" placeholder="Username" >
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group input-group-lg">
+              <span class="input-group-addon settinglabel" >Password</span>
+              <input data-bind="value : user.password" type="password" class="form-control" placeholder="Password" >
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="input-group input-group-lg">
+            <button type="button" class="btn btn-primary btn-lg" style="float: right;width: 100%;" onclick="settingsManager.user.login()" >Login</button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-12">
-        <div class="input-group input-group-lg">
-        <button type="button" class="btn btn-primary btn-lg" style="float: right;width: 100%;" onclick="settingsManager.user.login()" >Login</button>
-        </div>
-      </div>
     </div>
-</div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/knockout/dist/knockout.js"></script>
     <script src="bower_components/cryptojslib/rollups/sha256.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     
     <script>
        var socket = io.connect();

@@ -75,8 +75,5 @@ module.exports = {
                 socket.emit('challangeAuth' , self.sha256( username + Math.random() + '' + username ) );
             }
         });
-    },
-    createUser : function(){
-        
     }
 }

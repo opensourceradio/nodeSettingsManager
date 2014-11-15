@@ -34,8 +34,6 @@ module.exports = {
     save : function( settings ){
         var self = this;
         var changed = [];
-        
-        console.log( settings );
         for( var s in settings ){
             var setting = settings[s];
             if( setting.server == self.data.name && self.data.settings.hasOwnProperty(setting.name) ){
